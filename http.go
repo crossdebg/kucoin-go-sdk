@@ -124,11 +124,12 @@ type Requester interface {
 
 // A BasicRequester represents a basic implement of Requester by http.Client.
 type BasicRequester struct {
+	Transport http.RoundTripper
 }
 
 // Request makes a http request.
 func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
-	tr := http.DefaultTransport
+	tr := br.Transport
 	tc := tr.(*http.Transport).TLSClientConfig
 	if tc == nil {
 		tc = &tls.Config{InsecureSkipVerify: request.SkipVerifyTls}
